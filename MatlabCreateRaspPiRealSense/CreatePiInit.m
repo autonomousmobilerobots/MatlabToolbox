@@ -50,7 +50,7 @@ Robot.CreatePort = tcpip(remoteHost, CreatePortNumber, 'inputbuffersize', 64);
 
 % use UDP for distance and tag reading
 Robot.DistPort = udp(remoteHost, DistPortNumber, 'LocalPort', DistPortNumber);
-Robot.TagPort = udp(remoteHost, TagPortNumber, 'LocalPort', TagTagPortNumber_Port);
+Robot.TagPort = udp(remoteHost, TagPortNumber, 'LocalPort', TagPortNumber);
 
 Robot.DistPort.ReadAsyncMode = 'continuous';
 set(Robot.DistPort,'Timeout',1);
