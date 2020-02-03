@@ -1,15 +1,17 @@
 function Robot = CreatePiInit(remoteHost)
-%Robot = CreatePiInit(remoteHost)
+% Robot = CreatePiInit(remoteHost)
 %
 % This file initializes the Robot struct
 % Robot.Name is a string containing the robot name
-% Robot.OL_Client - Optitrack NatNet client
-% Robot.CreatePort - tcp port for commands to the create
-% Robot.DistPort - udp port for distance telemetry from the Create
-% Robot.TagPort - udp port for tag telemetry from the Create
+% Robot.OL_Client - Optitrack NatNet client for overhead localization data
+% Robot.CreatePort - tcp port for commands to the Create and sensor data from the Create
+% Robot.DistPort - udp port for distance telemetry from the RealSense camera
+% Robot.TagPort - udp port for tag telemetry from the RealSense camera
 %
 % remoteHost is a string with the name or IP address of the Pi
-% ex. Robot = CreatePiInit('192.168.1.141') or Ports = CreatePiInit('eve') 
+% example: 
+% Robot = CreatePiInit('192.168.1.141') or 
+% Robot = CreatePiInit('eve') 
 %
 % Before running this function make sure:
 % The Motive server must be running on the Optitrack PC
@@ -22,13 +24,16 @@ function Robot = CreatePiInit(remoteHost)
 % Modified By: Alec Newport, acn55, 2018
 % Liran, 2019, 2020
 
+if nargin<1
+	error('Missing remoteHost argument.  See help CreatePiInit'); 
+end
+    
 global td
 td = 0.015;
 
-Create_Port = 8865; % TCP
-Dist_Port = 8833; % UDP
-Tag_Port = 8844; % UDP
-
+CreatePortNumber = 8865; % TCP
+DistPortNumber = 8833; % UDP
+TagPortNumber = 8844; % UDP
 
 Robot.Name = remoteHost;
 
@@ -41,11 +46,11 @@ InitSSH_Connection(remoteHost, './robot');
 pause (3);
 
 % use TCP for control commands and data from the Create
-Robot.CreatePort = tcpip(remoteHost, Create_Port, 'inputbuffersize', 64);
+Robot.CreatePort = tcpip(remoteHost, CreatePortNumber, 'inputbuffersize', 64);
 
 % use UDP for distance and tag reading
-Robot.DistPort = udp(remoteHost, Dist_Port, 'LocalPort', Dist_Port);
-Robot.TagPort = udp(remoteHost, Tag_Port, 'LocalPort', Tag_Port);
+Robot.DistPort = udp(remoteHost, DistPortNumber, 'LocalPort', DistPortNumber);
+Robot.TagPort = udp(remoteHost, TagPortNumber, 'LocalPort', TagTagPortNumber_Port);
 
 Robot.DistPort.ReadAsyncMode = 'continuous';
 set(Robot.DistPort,'Timeout',1);
@@ -58,8 +63,8 @@ Robot.TagPort.inputbuffersize = 512;
 warning off
 
 disp('Opening connection to iRobot Create...');
-	fopen(Robot.CreatePort);
-	pause(0.5)
+fopen(Robot.CreatePort);
+pause(0.5)
 % udp ports are opened and closed in the tag and dist functions
 
 %% Confirm two way connumication
