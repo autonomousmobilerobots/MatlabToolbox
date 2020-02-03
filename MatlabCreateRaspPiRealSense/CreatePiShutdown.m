@@ -1,4 +1,4 @@
-function CreatePiShutdown(Ports)
+function CreatePiShutdown(Robot)
 %
 %   The object 'serPort' must first be initialized with the 
 %   CreatePiInit command 
@@ -6,38 +6,38 @@ function CreatePiShutdown(Ports)
 % By: Liran 1/2019, 2020
 
 % Before closing communication stop the robot in case it is moving
-SetFwdVelAngVelCreate(Ports.create, 0,0);
+SetFwdVelAngVelCreate(Robot.CreatePort, 0,0);
 pause(1);
 
 % Send stop command to terminate the loop on the Pi
 data_to_send = ('stop');
-fwrite(Ports.create, data_to_send);
+fwrite(Robot.CreatePort, data_to_send);
 pause(1);
  
  
  % Clean up
 try
     
-    Ports.OL_Client.disconnect;
+    Robot.OL_Client.disconnect;
     
-    if (strcmp(Ports.create.status,'open'))
-        fclose(Ports.create);
+    if (strcmp(Robot.CreatePort.status,'open'))
+        fclose(Robot.CreatePort);
         pause(0.1);
     end
     	
-	if (strcmp(Ports.dist.status,'open'))
-		fclose(Ports.dist);
+	if (strcmp(Robot.DistPort.status,'open'))
+		fclose(Robot.DistPort);
         pause(0.1);
     end
 	
-	if (strcmp(Ports.tag.status,'open'))
-		fclose(Ports.tag);
+	if (strcmp(Robot.TagPort.status,'open'))
+		fclose(Robot.TagPort);
 		pause(0.1);
     end	
     
-    delete(Ports.create);
-    delete(Ports.dist);
-	delete(Ports.tag);
+    delete(Robot.CreatePort);
+    delete(Robot.DistPort);
+	delete(Robot.TagPort);
     
 catch
     disp('WARNING:  Function did not terminate correctly.  Output may be unreliable.')
