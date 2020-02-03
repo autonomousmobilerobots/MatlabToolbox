@@ -1,6 +1,6 @@
 function CreatePiShutdown(Robot)
 %
-%   The object 'serPort' must first be initialized with the 
+%   The object 'Robot' must first be initialized with the 
 %   CreatePiInit command 
 %
 % By: Liran 1/2019, 2020
