@@ -2,8 +2,8 @@ function Pose = Create_Optitrack_Pose(RobotName, OverheadLocClient)
 % Create_Optitrack_Pose retrieves the Create pose from Optitrack
 %
 % RobotName is a string
-% OverheadLocClient is part of the Ports structure returned by CreatePiInit
-% Ex. Pose = Create_Optitrack_Pose('eve', ports)
+% OverheadLocClient is part of the Robot structure returned by CreatePiInit
+% Ex. Pose = Create_Optitrack_Pose('eve', Robot.OL_Client)
 % Pose is of the form [X Y Theta Timestamp]
 % If the requested robot name is not valid or is not currently being tracked, returns P=[]
 %
