@@ -1,18 +1,21 @@
 function depth_array = RealSenseDist(serPort)
-% RealSenseDist(serPort) returns an array of floats. The first represents
-% the time the measurement was taken. The remaining elements represent the
-% depth of the point in meters from the camera. depth of the point in meters,
-% from the camera. 
+% RealSenseDist(serPort) returns an array of 10 floats. 
+% The first represents the time elapsed since the image was captured
+% The remaining elements represent the depth of 9 point in meters from the camera.
 %   Inputs: 
-%       serPort: port to connect to RaspPi
+%       serPort: udp port to read distance telemetry
 %   Outputs:
-%       depth_array: delay from when image was taken and depth measurement 
-%       [10 x 1] matrix of floats. depth_array(1) = delay from image taken, 
-%       depth_array(2:10) = depth to point. depth_array(2) is left most 
-%       point, depth_array(10) is right most point
+%       depth_array:  
+%       [10 x 1] matrix of floats. 
+%       depth_array(1) = delay from image taken
+%       depth_array(2:10) = depth to 0 points
+%         depth_array(2) is left most point (~27 degrees from center)
+%         depth_array(10) is right most point (~-27 degrees from center)
 %
 % Note the minimum effective distance for the depth sensor is 0.175m, and
 % the maximum effective distance is ~10 meters. 
+%
+% % Note: if running this in lab serPort = Robot.DistPort
  
 % Port should be closed. If it is open close it first 
 if (strcmp(serPort.status,'open'))

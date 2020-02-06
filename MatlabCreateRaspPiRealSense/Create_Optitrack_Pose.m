@@ -1,9 +1,14 @@
 function Pose = Create_Optitrack_Pose(RobotName, OverheadLocClient)
 % Create_Optitrack_Pose retrieves the Create pose from Optitrack
 %
-% RobotName is a string
-% OverheadLocClient is part of the Robot structure returned by CreatePiInit
-% Ex. Pose = Create_Optitrack_Pose('eve', Robot.OL_Client)
+% RobotName is a string (equal to one of the rigid body assets defined in Motive)
+% OverheadLocClient is a Motive client created by Init_OverheadLocClient()
+%
+% Ex. 
+% Pose = Create_Optitrack_Pose('eve', OverheadLocClient)
+% Ex. in the lab:
+% Pose = Create_Optitrack_Pose(Robot.Name, Robot.OL_Client)
+%
 % Pose is of the form [X Y Theta Timestamp]
 % If the requested robot name is not valid or is not currently being tracked, returns P=[]
 %
@@ -17,20 +22,19 @@ function Pose = Create_Optitrack_Pose(RobotName, OverheadLocClient)
 
     %Pose = zeros(1,5);
     
-    % get the asset descriptions for the asset names
+    % get the asset descriptions for the tracked asset names
 	model = OverheadLocClient.getModelDescription;
-	if ( model.RigidBodyCount < 1 )
+    if ( model.RigidBodyCount < 1 )
         fprintf( 'No Robots found\n' )
 		return
     end
     
     % get current frame
-    %java.lang.Thread.sleep( 500 );
     data = OverheadLocClient.getFrame; 
     if (isempty(data.RigidBody(1)))
 		fprintf( 'Packet is empty or stale\n' )
 		return
-	end
+    end
         
     % find your robot in the packet by name. Case insensitive compare
     num = 0;
@@ -49,13 +53,16 @@ function Pose = Create_Optitrack_Pose(RobotName, OverheadLocClient)
         % check if it's being tracked
         if (data.RigidBody( num ).Tracked == 1)
             format short g;
+            % Position
             Pose(1) = data.RigidBody( num ).x ;
             Pose(2) = data.RigidBody( num ).y ;
-            q = quaternion( data.RigidBody( num ).qx, data.RigidBody( num ).qy, data.RigidBody( num ).qz, data.RigidBody( num ).qw );
-            qRot = quaternion( 0, 0, 0, 1);
-            q = mtimes( q, qRot);
-            a = EulerAngles( q , 'zyx' );
-            Pose(3) = a( 3 ) * -180.0 / pi;
+            % Calculate Theta from quaternions
+            OL_q = quaternion( data.RigidBody( num ).qx, data.RigidBody( num ).qy, data.RigidBody( num ).qz, data.RigidBody( num ).qw );
+            qRot = quaternion( 0, 0, 0, 1 );
+            q = mtimes( OL_q, qRot );
+            angles = EulerAngles( q , 'zyx' );
+            Pose(3) = -angles( 3 );
+            % Optitrack time stamp
             Pose(4) = data.Timestamp;
         else
             fprintf( '\t%s is not currently tracked\n', model.RigidBody( num ).Name )

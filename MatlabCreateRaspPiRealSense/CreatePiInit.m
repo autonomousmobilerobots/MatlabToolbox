@@ -1,7 +1,10 @@
 function Robot = CreatePiInit(remoteHost)
 % Robot = CreatePiInit(remoteHost)
+% This function Initializes an Optitrack client and SSH communication with the Create
+% Defines communication ports between the PC and the Create
+% Puts the Create in full control mode 
 %
-% This file initializes the Robot struct
+% Returns the Robot struct:
 % Robot.Name is a string containing the robot name
 % Robot.OL_Client - Optitrack NatNet client for overhead localization data
 % Robot.CreatePort - tcp port for commands to the Create and sensor data from the Create
