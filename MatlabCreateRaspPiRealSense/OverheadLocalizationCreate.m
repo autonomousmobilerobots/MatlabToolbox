@@ -1,6 +1,6 @@
-function[poseX, poseY, poseTheta] = OverheadLocalizationCreate(Robot)
+function [poseX, poseY, poseTheta] = OverheadLocalizationCreate(Robot)
 % This function returns the latest Optitrack pose of 'Robot'
-% Dummy wrapper for 'Create_Optitrack_Pose', so students can use the same function as the simulator.
+% Wrapper for 'Create_Optitrack_Pose', so students can use the same function as the simulator.
 %
 % Robot struct is created by CreatePiInit function
 %
