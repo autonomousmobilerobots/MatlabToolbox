@@ -10,6 +10,10 @@ function Pose = Create_Optitrack_Pose(RobotName, OverheadLocClient)
 % Pose = Create_Optitrack_Pose(Robot.Name, Robot.OL_Client)
 %
 % Pose is of the form [X Y Theta Timestamp]
+% X,Y in meters
+% Theta in radians
+% Timestamp in seconds, counted from start of Motive session
+%
 % If the requested robot name is not valid or is not currently being tracked, returns P=[]
 %
 % Liran 2020
