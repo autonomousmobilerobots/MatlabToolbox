@@ -1,20 +1,21 @@
 function InitSSH_Connection(remoteHost, Remote_Command)
-
-% InitSSH_Connection(remoteHost)
 %
-% Initialize connection with the Pi and run 'robot' function
+% InitSSH_Connection(remoteHost, Remote_Command))
+%
+% Initialize SSH connection with the Rasp Pi and run Remote_Command on the Pi
 % Will open a separate command window 
 % remoteHost is a string containing the name or IP address of the Pi
 % Remote_Command is the initial script to run on the Pi
 %
 % Example - 
-% InitSSH_Connection('WallE') or InitSSH_Connection('10.253.194.101')
+% InitSSH_Connection('WallE', './robot') or 
+% InitSSH_Connection('10.253.194.101', './debug')
 % 
-% Liran 1/2019
+% Liran 1/2019, 2020
 
 % Connect to host <remoteHost> using Plink (part of Putty)
 % Verbose for debug:
-%plink = '"C:\Program Files (x86)\PuTTY\plink.exe" -v';
+% plink = '"C:\Program Files (x86)\PuTTY\plink.exe" -v';
 % Silent:
 plink = '"C:\Program Files\PuTTY\plink.exe"';
 

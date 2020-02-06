@@ -1,10 +1,12 @@
  function tags = RealSenseTag(serPort)
-%RealSenseTag(serPort) returns an array of tags
-%   Each row of the array is [dt id x y rot]
+% RealSenseTag(serPort) returns an array of tags
 %   
+%   serPort: udp port to read tag telemetry
+%
 %   The sensor frame is defined as x pointing out of the camera (the normal
 %   of the front of the camera) and y to the left
 %
+% Each row of the array is [dt id x y rot]
 %   dt = delay from when the image was taken
 %   id = The id of the tag
 %   x = The x-distance of the tag from the center of the camera (m)
@@ -12,8 +14,8 @@
 %   rot = The rotation of the tag about the x axis (rad)
 %
 %   If no tag detected, returns an empty array
-
-% Note: if running this in lab serPort = Ports.tag
+%
+% Note: if running this in lab serPort = Robot.TagPort
 
 
 % Port should be closed. If it is open close it first 
