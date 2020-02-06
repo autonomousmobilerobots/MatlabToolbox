@@ -3,7 +3,7 @@ function port = DebugPiInit(remoteHost)
 %
 % This file initializes a tcp port for use with iRobot Create
 % port - tcp port for commands to the create and receive images
-%from Realsense camera
+% from Realsense camera
 %
 % remoteHost is a string with the name or IP address of the Pi
 % ex. port = CreatePiInit('192.168.1.141') or Ports = CreatePiInit('eve') 

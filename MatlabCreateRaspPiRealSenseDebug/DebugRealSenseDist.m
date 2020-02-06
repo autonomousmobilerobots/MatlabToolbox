@@ -1,5 +1,4 @@
 function depth_array = DebugRealSenseDist(serPort)
-
 % DebugRealSenseDist(serPort) returns an array of floats, each 
 % element of [depth_array] represents the depth of the point in meters,
 % from the camera. 

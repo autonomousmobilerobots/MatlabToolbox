@@ -1,10 +1,10 @@
  function tags = DebugRealSenseTag(serPort)
 %RealSenseTag(serPort) returns a array of tags
-%   Each row of the array is [id z x yaw]
+%   Each row of the array is [id x y yaw]
 %   
 %   id = The id of the tag
-%   z = The z-distance of the tag from the 
-%   x = The horizontal distance of the center of the tag from the center of
+%   x = The z-distance of the tag from the 
+%   y = The horizontal distance of the center of the tag from the center of
 %   the camera
 %   yaw = The orientation of the tag, in radians
 %   If no tag detected, return empty array
