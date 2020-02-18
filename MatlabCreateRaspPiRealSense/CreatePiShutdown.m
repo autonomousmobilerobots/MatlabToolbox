@@ -7,6 +7,9 @@ function CreatePiShutdown(Robot)
 %
 % By: Liran 1/2019, 2020
 
+if nargin<1
+	error('Missing argument.  See help CreatePiShutdown'); 
+end
 
 % Before closing communication stop the robot in case it is moving
 SetFwdVelAngVelCreate(Robot.CreatePort, 0,0);
@@ -14,14 +17,21 @@ pause(1);
 
 % Send stop command to terminate the control loop on the Pi
 data_to_send = ('stop');
-fwrite(Robot.CreatePort, data_to_send);
-pause(1);
+try 
+    fwrite(Robot.CreatePort, data_to_send);
+    pause(1);
+catch
+    disp('No longer connected to the robot');
+end
  
  
  % Clean up
 try
     
-    Robot.OL_Client.disconnect;
+    if (Robot.OL_Client ~= 0) 
+        Robot.OL_Client.disconnect;
+        pause(0.1);
+    end
     
     if (strcmpi(Robot.CreatePort.status,'open'))
         fclose(Robot.CreatePort);
@@ -43,7 +53,7 @@ try
 	delete(Robot.TagPort);
     
 catch
-    disp('WARNING:  Function did not terminate correctly.  Output may be unreliable.')
+    disp('WARNING: Shutdown encountered an error while closing resources')
 end
 
 end

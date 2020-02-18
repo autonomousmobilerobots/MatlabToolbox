@@ -34,41 +34,62 @@ end
 global td
 td = 0.015;
 
-CreatePortNumber = 8865; % TCP
-DistPortNumber = 8833; % UDP
-TagPortNumber = 8844; % UDP
-
 Robot.Name = remoteHost;
 
 %Init NatNet client and connect to Optitrack server
 Robot.OL_Client = Init_OverheadLocClient();
+
+CreatePortNumber = 8865; % TCP
+DistPortNumber = 8833; % UDP
+TagPortNumber = 8844; % UDP
+
+% Set up UDP port for distance telemetry
+Robot.DistPort = udp(remoteHost, DistPortNumber, 'LocalPort', DistPortNumber);
+Robot.DistPort.ReadAsyncMode = 'continuous';
+set(Robot.DistPort,'Timeout',1);
+Robot.DistPort.inputbuffersize = 512;
+try 
+    fopen(Robot.DistPort);
+    fclose(Robot.DistPort);
+catch
+    disp('Problem setting up Dist port. Restart Matlab and the robot and run Iit again');
+    Robot = [];
+    return;
+end
+
+% Set up UDP port for tag telemetry
+Robot.TagPort = udp(remoteHost, TagPortNumber, 'LocalPort', TagPortNumber);
+Robot.TagPort.ReadAsyncMode = 'continuous';
+set(Robot.TagPort,'Timeout',1);
+Robot.TagPort.inputbuffersize = 512;
+try % Check you can open the port
+    fopen(Robot.TagPort);
+    fclose(Robot.TagPort);
+catch
+    disp('Problem setting up Tag port. Restart Matlab and the robot and run Init again');
+    Robot = [];
+    return 
+end
 
 % Open SSH connection to the Create, and start the script
 InitSSH_Connection(remoteHost, './robot');
 % Patience
 pause (3);
 
-% use TCP for control commands and data from the Create
+% Set up TCP port for control commands and data from the Create
 Robot.CreatePort = tcpip(remoteHost, CreatePortNumber, 'inputbuffersize', 64);
-
-% use UDP for distance and tag reading
-Robot.DistPort = udp(remoteHost, DistPortNumber, 'LocalPort', DistPortNumber);
-Robot.TagPort = udp(remoteHost, TagPortNumber, 'LocalPort', TagPortNumber);
-
-Robot.DistPort.ReadAsyncMode = 'continuous';
-set(Robot.DistPort,'Timeout',1);
-Robot.DistPort.inputbuffersize = 512;
-
-Robot.TagPort.ReadAsyncMode = 'continuous';
-set(Robot.TagPort,'Timeout',1);
-Robot.TagPort.inputbuffersize = 512;
 
 warning off
 
 disp('Opening connection to iRobot Create...');
-fopen(Robot.CreatePort);
-pause(0.5)
-% udp ports are opened and closed in the tag and dist functions
+try
+    fopen(Robot.CreatePort);
+    pause(0.5);
+catch
+    disp('Problem setting up TCP Create port. Restart Matlab and the robot and run Init again');
+    Robot = [];
+    return
+end
 
 %% Confirm two way connumication
 disp('Setting iRobot Create to Control Mode...');

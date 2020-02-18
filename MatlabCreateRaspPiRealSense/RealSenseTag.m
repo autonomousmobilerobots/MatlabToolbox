@@ -17,9 +17,12 @@
 %
 % Note: if running this in lab serPort = Robot.TagPort
 
+if nargin<1
+	error('Missing serPort argument.  See help RealSenseTag'); 
+end
 
 % Port should be closed. If it is open close it first 
-if (strcmp(serPort.status,'open'))
+if (strcmpi(serPort.status,'open'))
 		fclose(serPort);
 end 
 
@@ -27,7 +30,6 @@ end
 fopen(serPort);
 
 warning off
-global td
 
 while serPort.BytesAvailable==0
     %pause(0.1);
@@ -64,9 +66,5 @@ else
         tags = [tags;temp];
     end
 end	
-
-pause(td)
-
-return
 
 end

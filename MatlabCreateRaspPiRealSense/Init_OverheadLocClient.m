@@ -24,6 +24,7 @@ function OverheadLocClient = Init_OverheadLocClient()
     if ( OverheadLocClient.IsConnected == 0 )
         fprintf( '\tNatEnt Client failed to connect\n' )
         fprintf( '\tMake sure the Optitrack host is connected and streaming\n' )
+        OverheadLocClient = 0;
     else
         fprintf( '\tConnected to the Optitrack server\n' ) 
     end

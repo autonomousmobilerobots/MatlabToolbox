@@ -1,5 +1,8 @@
 function depth_array = RealSenseDist(serPort)
 % RealSenseDist(serPort) returns an array of 10 floats. 
+%
+% serPort: udp port to read distance telemetry
+%
 % The first represents the time elapsed since the image was captured
 % The remaining elements represent the depth of 9 point in meters from the camera.
 %   Inputs: 
@@ -17,8 +20,12 @@ function depth_array = RealSenseDist(serPort)
 %
 % % Note: if running this in lab serPort = Robot.DistPort
  
+if nargin<1
+	error('Missing serPort argument.  See help RealSenseDist'); 
+end
+
 % Port should be closed. If it is open close it first 
-if (strcmp(serPort.status,'open'))
+if (strcmpi(serPort.status,'open'))
 		fclose(serPort);
 end 
 
@@ -26,7 +33,7 @@ end
 fopen(serPort);
 
 warning off
-global td
+
 num_points = 10; % delay + 9 distance values
 
 while serPort.BytesAvailable==0
@@ -53,7 +60,5 @@ else
         depth_array(i) = str2double(cell_array(i));
     end
 end
-pause(td)
 
-return
 end
