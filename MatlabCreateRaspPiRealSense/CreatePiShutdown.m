@@ -11,15 +11,18 @@ if nargin<1
 	error('Missing argument.  See help CreatePiShutdown'); 
 end
 
-% Before closing communication stop the robot in case it is moving
-SetFwdVelAngVelCreate(Robot.CreatePort, 0,0);
-pause(1);
-
-% Send stop command to terminate the control loop on the Pi
-data_to_send = ('stop');
+% Stop robot and control loop
 try 
+    
+    % Before closing communication stop the robot in case it is moving
+    SetFwdVelAngVelCreate(Robot.CreatePort, 0,0);
+    pause(1);
+    
+    % Send stop command to terminate the control loop on the Pi
+    data_to_send = ('stop');
     fwrite(Robot.CreatePort, data_to_send);
     pause(1);
+    
 catch
     disp('No longer connected to the robot');
 end
@@ -51,6 +54,8 @@ try
     delete(Robot.CreatePort);
     delete(Robot.DistPort);
 	delete(Robot.TagPort);
+    
+    disp('Shutdown Completed')
     
 catch
     disp('WARNING: Shutdown encountered an error while closing resources')
