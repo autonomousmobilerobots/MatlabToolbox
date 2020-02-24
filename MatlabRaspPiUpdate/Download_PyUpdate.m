@@ -6,6 +6,13 @@ function Download_PyUpdate(remoteHost)
 % Will open a separate command window 
 % remoteHost is a string containing the name or IP address of the Pi
 %
+% File 'Commands.txt' has to be in the same folder and contain the following
+% 3 lines:
+%
+% rm PyUpdate
+% wget https://raw.githubusercontent.com/autonomousmobilerobots/RaspberryPi/master/PyUpdate
+% chmod +x PyUpdate
+%
 % Liran 2020
 
 % Connect to host <remoteHost> using Plink (part of Putty)
