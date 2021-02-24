@@ -11,7 +11,7 @@ function depth_array = RealSenseDist(serPort)
 %       depth_array:  
 %       [10 x 1] matrix of floats. 
 %       depth_array(1) = delay from image taken
-%       depth_array(2:10) = depth to 0 points
+%       depth_array(2:10) = depth to 9 points
 %         depth_array(2) is left most point (~27 degrees from center)
 %         depth_array(10) is right most point (~-27 degrees from center)
 %
