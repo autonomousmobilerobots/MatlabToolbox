@@ -15,7 +15,7 @@ end
 try 
     
     % Before closing communication stop the robot in case it is moving
-    SetFwdVelAngVelCreate(Robot.CreatePort, 0,0);
+    SetFwdVelAngVelCreate(Robot, 0,0);
     pause(1);
     
     % Send stop command to terminate the control loop on the Pi

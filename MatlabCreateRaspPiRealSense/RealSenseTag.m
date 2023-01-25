@@ -1,7 +1,7 @@
- function tags = RealSenseTag(serPort)
-% RealSenseTag(serPort) returns an array of tags
+ function tags = RealSenseTag(Robot)
+% RealSenseTag(Robot) returns an array of tags
 %   
-%   serPort: udp port to read tag telemetry
+%   Robot is the robot struct created by CretePiInit
 %
 %   The sensor frame is defined as x pointing out of the camera (the normal
 %   of the front of the camera) and y to the left
@@ -15,56 +15,66 @@
 %
 %   If no tag detected, returns an empty array
 %
-% Note: if running this in lab serPort = Robot.TagPort
+% % Liran 2019, 2023
+
 
 if nargin<1
 	error('Missing serPort argument.  See help RealSenseTag'); 
 end
 
-% Port should be closed. If it is open close it first 
-if (strcmpi(serPort.status,'open'))
-		fclose(serPort);
-end 
+tags = [];
+serPort = Robot.TagPort;
 
-%Open the port	
-fopen(serPort);
+try
+    
+    % Port should be closed. If it is open close it first 
+    if (strcmpi(serPort.status,'open'))
+            fclose(serPort);
+    end 
 
-warning off
+    %Open the port	
+    fopen(serPort);
 
-while serPort.BytesAvailable==0
-    %pause(0.1);
-end
+    warning off
 
-%Read packet
-resp = fread(serPort, serPort.BytesAvailable); 
-
-fclose(serPort);
-
-if resp == 99
-    disp('No camera connected, cannot call this function')
-    tags = [];
-else
-	to_str = char(resp.');
-        dataArr = strsplit(to_str, ' ');
-        dt = str2double(dataArr(1));
-	if strcmp(dataArr(2),'no')
-		tags = [];
-		return
-	end
-
-	num_tags = (size(dataArr)-1)/5;
-	num_tags = num_tags(2);
-	tags = [];
-	
-    for i=1:num_tags
-        loopCounter = (i-1)*5+2;
-        id = str2double(dataArr(loopCounter+1));
-        x = str2double(dataArr(loopCounter+2));
-        y = str2double(dataArr(loopCounter+3));
-        yaw = str2double(dataArr(loopCounter+4));
-        temp = [dt, id, x, y, yaw];
-        tags = [tags;temp];
+    while serPort.BytesAvailable==0
+        %pause(0.1);
     end
-end	
 
+    %Read packet
+    resp = fread(serPort, serPort.BytesAvailable); 
+
+    fclose(serPort);
+
+    if resp == 99
+        disp('No camera connected, cannot call this function')
+        tags = [];
+    else
+        to_str = char(resp.');
+            dataArr = strsplit(to_str, ' ');
+            dt = str2double(dataArr(1));
+        if strcmp(dataArr(2),'no')
+            tags = [];
+            return
+        end
+
+        num_tags = (size(dataArr)-1)/5;
+        num_tags = num_tags(2);
+        tags = [];
+
+        for i=1:num_tags
+            loopCounter = (i-1)*5+2;
+            id = str2double(dataArr(loopCounter+1));
+            x = str2double(dataArr(loopCounter+2));
+            y = str2double(dataArr(loopCounter+3));
+            yaw = str2double(dataArr(loopCounter+4));
+            temp = [dt, id, x, y, yaw];
+            tags = [tags;temp];
+        end
+    end	
+
+catch
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));    
 end
+
+end %function
