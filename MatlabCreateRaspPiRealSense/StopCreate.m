@@ -7,17 +7,19 @@ function StopCreate(Robot)
 %
 % By: Liran 2021
 
-if nargin<1
-	error('Missing argument.  See help StopCreate'); 
-end
+	if nargin<1
+		error('Missing argument.  See help StopCreate'); 
+	end
 
-% Stop robot
-try 
-    
-    % Set velocities to zero
-    SetFwdVelAngVelCreate(Robot.CreatePort, 0,0);
-    pause(1);
-    
-catch
-    disp('No longer connected to the robot');
-end
+	% Stop robot
+	try 
+		
+		% Set velocities to zero
+		SetFwdVelAngVelCreate(Robot, 0,0);
+		pause(1);
+		
+	catch
+		disp('No longer connected to the robot');
+	end
+
+end %function
