@@ -1,4 +1,4 @@
-function [Signal] = CliffRightSignalStrengthRoomba(serPort);
+function [Signal] = CliffRightSignalStrengthRoomba(serPort)
 %[Signal] = CliffRightSignalStrengthRoomba(serPort)
 %Displays the strength of the right cliff sensor's signal.
 %Ranges between 0-100 percent signal
@@ -6,27 +6,24 @@ function [Signal] = CliffRightSignalStrengthRoomba(serPort);
 
 % By; Joel Esposito, US Naval Academy, 2011
 % Modified by: Chuck Yang, ty244, 2012
+% % % Liran 2025 new TCP implementation
 
 %Initialize preliminary return values
 Signal = nan;
 
 try
-    
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
 
-warning off
-global td
-fwrite(serPort, [142 31]);
+    %Flush Buffer
+    flush(serPort);
 
-Strength =  fread(serPort, 1, 'uint16');
-Signal=(Strength/4095)*100;
+    warning off
+    global td
+    write(serPort, [142 31], "uint8");
 
-pause(td)
+    Strength =  read(serPort, 1, 'uint16');
+    Signal=(Strength/4095)*100;
+
+    pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end

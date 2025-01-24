@@ -1,4 +1,4 @@
-function [] = DemoCmdsCreate(serPort, DemoNum);
+function [] = DemoCmdsCreate(serPort, DemoNum)
 %[] = DemoCmdsCreate(serPort, DemoNum)
 % Starts built in Demos for Create (not Roomba)
 % -1: Aborts the current demo
@@ -23,22 +23,21 @@ function [] = DemoCmdsCreate(serPort, DemoNum);
 
 % By; Joel Esposito, US Naval Academy, 2011
 % Modified by: Chuck Yang, ty244, 2012
+% % % Liran 2025 new TCP implementation
+
 try
+
+    %Flush Buffer
+    flush(serPort);
+
+    warning off
+    global td
+
+    write(serPort, [136 DemoNum], "uint8");
+    disp('Performing Demo')
+    pause(td)
     
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
-
-warning off
-global td
-
-fwrite(serPort, [136 DemoNum]);
-disp('Performing Demo')
-pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end
 

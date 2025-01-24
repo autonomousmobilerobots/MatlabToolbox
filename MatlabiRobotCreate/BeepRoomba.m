@@ -1,21 +1,21 @@
-function [] = BeepRoomba(serPort);
+function [] = BeepRoomba(serPort)
 %[] = BeepRoomba(serPort)
 % Plays a song made by RoombaInit command.
 
 % By; Joel Esposito, US Naval Academy, 2011
+% % % Liran 2025 new TCP implementation
+
+
 % sing it
 try
-    
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
+    % flush output buffer
+    flush(serPort);
+
+    global td
+    write(serPort, [141 1], "uint8")
+    pause(td)
+catch
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end
 
-global td
-fwrite(serPort, [141 1])
-pause(td)
-catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
 end
