@@ -1,13 +1,13 @@
 function TestCreate(Robot)
 % TestCreate: runs a quick test of communication and sensors
-% 
+%
 %   INPUTS
 %   Robot       Struct from running CreatePiInit
 %
 %   The function will try to send commands to the Create and retrieve sensor data
 %   sensor data will be printed to the terminal
-% 
-%  
+%
+%
 %   Cornell University
 %   Liran Spring 2022, 2023
 
@@ -24,14 +24,14 @@ BeepCreate(Robot)
 pause(0.2);
 
 % read truth pose (from overhead localization system)
-[Overhead_poseX, Overhead_poseY, Overhead_poseTheta] = OverheadLocalizationCreate(Robot)
+[Overhead_poseX, Overhead_poseY, Overhead_poseTheta] = OverheadLocalizationCreate(Robot);
 pause(0.2);
 
 %Create sensors:
 
 %read odometry distance & angle
-Odom_DistanceSensor = DistanceSensorRoomba(Robot.CreatePort)
-Odom_AngleSensor = AngleSensorRoomba(Robot.CreatePort)
+Odom_DistanceSensor = DistanceSensorRoomba(Robot.CreatePort);
+Odom_AngleSensor = AngleSensorRoomba(Robot.CreatePort);
 pause(0.2);
 
 % read bump data
@@ -40,11 +40,11 @@ pause(0.2);
 pause(0.2);
 
 %read depth data
-Depth = RealSenseDist(Robot)
+Depth = RealSenseDist(Robot);
 pause(0.2);
 
 %read tags data (beacons)
-Tags = RealSenseTag(Robot)
+Tags = RealSenseTag(Robot);
 pause(0.2);
 
 % turn a bit
@@ -61,4 +61,4 @@ pause(0.5);
 BeepCreate(Robot);
 
 
-end	
+end
