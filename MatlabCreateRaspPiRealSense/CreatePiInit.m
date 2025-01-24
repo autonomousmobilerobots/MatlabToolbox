@@ -89,9 +89,10 @@ end
 warning off
 
 
-% Confirm two way connumication
+% Confirm connumication
 disp('Setting iRobot Create to Control Mode...');
-% Start! and see if its alive
+
+% Start!
 write(Robot.CreatePort,128,"uint8");
 pause(0.1)
 
@@ -101,9 +102,6 @@ pause(0.1)
 % into charger
 write(Robot.CreatePort,132,"uint8");
 pause(0.1)
-
-% light LEDS
-write(Robot.CreatePort,[139 25 0 128],"uint8");
 
 % set song
 write(Robot.CreatePort, [140 1 1 48 20],"uint8");
