@@ -26,7 +26,7 @@ function Robot = CreatePiInit(remoteHost)
 % By: Chuck Yang, ty244, 2012
 % Modified By: Alec Newport, acn55, 2018
 % Liran, 2019, 2020
-% % % Liran 2025 new UDP implementation
+% % % Liran 2025 new UDP & TCP implementation
 
 
 if nargin<1
