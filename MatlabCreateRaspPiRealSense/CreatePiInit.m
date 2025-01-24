@@ -77,8 +77,14 @@ InitSSH_Connection(remoteHost, './robot');
 pause (3);
 
 % Set up TCP port for control commands and data from the Create
-Robot.CreatePort = tcpclient(remoteHost, CreatePortNumber);
-Robot.CreatePort.ByteOrder = "big-endian";
+try
+    Robot.CreatePort = tcpclient(remoteHost, CreatePortNumber);
+    Robot.CreatePort.ByteOrder = "big-endian";
+catch
+    disp('Problem setting up TCP port. Restart Matlab and the robot and run Init again');
+    Robot = [];
+    return
+end
 
 warning off
 
