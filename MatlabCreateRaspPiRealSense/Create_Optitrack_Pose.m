@@ -25,7 +25,7 @@ Pose = NaN(4,1);
 % get the asset descriptions for the tracked asset names
 model = OverheadLocClient.getModelDescription;
 if ( model.RigidBodyCount < 1 )
-    fprintf( 'No Robots found\n' )
+    fprintf( 'No Robots Tracked, Select Assets to Track in Motive\n' )
     return
 end
 
