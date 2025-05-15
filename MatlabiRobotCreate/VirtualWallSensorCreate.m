@@ -1,32 +1,31 @@
-function [state] = VirtualWallSensorCreate(serPort);
+function [state] = VirtualWallSensorCreate(serPort)
 % Specifies the state of the virtual wall detector sensor
 % Note that the force field on top of the Home Base also trips this sensor
 % Either triggered or not triggered
 
 % Salzberger 7/6/10
+% % % Liran 2025 new TCP implementation
 
 %Initialize Preliminary return values
 state = nan;
 
 try
 
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
-warning off
-global td
+    %Flush Buffer
+    flush(serPort);
 
-fwrite(serPort, [142],'async');
-pause(td)
-fwrite(serPort,13,'async'); 
-pause(td)
+    warning off
+    global td
 
-virtWall = dec2bin(fread(serPort, 1));
-state = bin2dec(virtWall(end));
-pause(td)
+    write(serPort, [142 13],'uint8');
+    pause(td)
+    % write(serPort,13,'uint8');
+    % pause(td)
+
+    virtWall = dec2bin(read(serPort, 1, "uint8"));
+    state = bin2dec(virtWall(end));
+    pause(td)
+
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end

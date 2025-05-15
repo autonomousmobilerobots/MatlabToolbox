@@ -1,4 +1,4 @@
-function [ButtonAdv,ButtonPlay] = ButtonsSensorRoomba(serPort);
+function [ButtonAdv,ButtonPlay] = ButtonsSensorRoomba(serPort)
 %[ButtonAdv,ButtonPlay] = ButtonsSensorRoomba(serPort)
 %Displays the state of Create's Play and Advance buttons, either pressed or
 %not pressed.
@@ -9,26 +9,23 @@ ButtonPlay = nan;
 
 % By; Joel Esposito, US Naval Academy, 2011
 % Modified by: Chuck Yang, ty244, 2012
+% % % Liran 2025 new TCP implementation
 try
-    
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
 
-warning off
-global td
+    %Flush Buffer
+    flush(serPort);
+
+    warning off
+    global td
 
 
-fwrite(serPort, [142 18]);
+    write(serPort, [142 18], "uint8");
 
-Buttons = dec2bin(fread(serPort, 1),8);
-ButtonAdv = bin2dec(Buttons(end-2));
-ButtonPlay = bin2dec(Buttons(end));
+    Buttons = dec2bin(read(serPort, 1, "uint8"),8);
+    ButtonAdv = bin2dec(Buttons(end-2));
+    ButtonPlay = bin2dec(Buttons(end));
 
-pause(td)
+    pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end

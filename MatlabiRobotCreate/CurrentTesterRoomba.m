@@ -1,32 +1,30 @@
-function [Current] = CurrentTesterRoomba(serPort);
+function [Current] = CurrentTesterRoomba(serPort)
 %[Current] = CurrentTesterRoomba(serPort)
-% Displays the current (in amps) flowing into or out of Create's battery. 
+% Displays the current (in amps) flowing into or out of Create's battery.
 % Negative currents indicate that current is flowing out of the battery.
 % Positive currents indicate that current is flowing into the battery.
 
 
 % By; Joel Esposito, US Naval Academy, 2011
 % Modified by: Chuck Yang, ty244, 2012
+% % % Liran 2025 new TCP implementation
 
 %Initialize preliminary return values
 Current = nan;
 
 try
 
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
+    %Flush Buffer
+    flush(serPort);
 
-warning off
-global td
-fwrite(serPort, [142 23]);
+    warning off
+    global td
 
-Current = fread(serPort, 1, 'int16')/1000;
+    write(serPort, [142 23], "uint8");
 
-pause(td)
+    Current = read(serPort, 1, 'int16')/1000;
+
+    pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end

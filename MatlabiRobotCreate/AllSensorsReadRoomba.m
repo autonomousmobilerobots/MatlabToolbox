@@ -1,7 +1,7 @@
 function [BumpRight, BumpLeft, BumpFront, Wall, virtWall, CliffLft, ...
     CliffRgt, CliffFrntLft, CliffFrntRgt, LeftCurrOver, RightCurrOver, ...
     DirtL, DirtR, ButtonPlay, ButtonAdv, Dist, Angle, ...
-    Volts, Current, Temp, Charge, Capacity, pCharge]   = AllSensorsReadRoomba(serPort);
+    Volts, Current, Temp, Charge, Capacity, pCharge]   = AllSensorsReadRoomba(serPort)
 %[BumpRight, BumpLeft, BumpFront, Wall, virtWall, CliffLft, ...
 %   CliffRgt, CliffFrntLft, CliffFrntRgt, LeftCurrOver, RightCurrOver, ...
 %   DirtL, DirtR, ButtonPlay, ButtonAdv, Dist, Angle, ...
@@ -15,6 +15,8 @@ function [BumpRight, BumpLeft, BumpFront, Wall, virtWall, CliffLft, ...
 % Esposito 3/2008
 % initialize preliminary return values
 % By; Joel Esposito, US Naval Academy, 2011
+% % % Liran 2025 new TCP implementation
+
 BumpRight = nan;
 BumpLeft = nan;
 BumpFront = nan;
@@ -42,76 +44,72 @@ pCharge = nan;
 
 try
 
-%Flush buffer
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
+    %Flush buffer
+    flush(serPort);
 
-warning off
-global td
-sensorPacket = [];
-% flushing buffer
-confirmation = (fread(serPort,1));
-while ~isempty(confirmation)
-    confirmation = (fread(serPort,26));
-end
+    warning off
+    global td
+    sensorPacket = [];
+    % flushing buffer
+    % confirmation = (fread(serPort,1));
+    % while ~isempty(confirmation)
+    %     confirmation = (fread(serPort,26));
+    % end
 
 
-%% Get (142) ALL(0) data fields
-fwrite(serPort, [142 0]);
+    %% Get (142) ALL(0) data fields
+    write(serPort, [142 0], "uint8");
 
-%% Read data fields
-BmpWheDrps = dec2bin(fread(serPort, 1),8);  %
+    %% Read data fields
+    BmpWheDrps = dec2bin(read(serPort, 1, "uint8"),8);  %
 
-BumpRight = bin2dec(BmpWheDrps(end))  % 0 no bump, 1 bump
-BumpLeft = bin2dec(BmpWheDrps(end-1))
-if BumpRight*BumpLeft==1
-    BumpRight =0;
-    BumpLeft = 0;
-    BumpFront =1;
-else
-    BumpFront = 0;
-end
-Wall = fread(serPort, 1)  %0 no wall, 1 wall
+    BumpRight = bin2dec(BmpWheDrps(end));  % 0 no bump, 1 bump
+    BumpLeft = bin2dec(BmpWheDrps(end-1));
+    if BumpRight*BumpLeft==1
+        BumpRight =0;
+        BumpLeft = 0;
+        BumpFront =1;
+    else
+        BumpFront = 0;
+    end
+    Wall = read(serPort, 1, "uint8");  %0 no wall, 1 wall
 
-CliffLft = fread(serPort, 1) % no cliff, 1 cliff
-CliffFrntLft = fread(serPort, 1)
-CliffFrntRgt = fread(serPort, 1)
-CliffRgt = fread(serPort, 1)
+    CliffLft = read(serPort, 1, "uint8"); % no cliff, 1 cliff
+    CliffFrntLft = read(serPort, 1, "uint8");
+    CliffFrntRgt = read(serPort, 1, "uint8");
+    CliffRgt = read(serPort, 1, "uint8");
 
-virtWall = fread(serPort, 1)%0 no wall, 1 wall
+    virtWall = read(serPort, 1, "uint8"); %0 no wall, 1 wall
 
-motorCurr = dec2bin( fread(serPort, 1),8 );
-Low1 = motorCurr(end);  % 0 no over curr, 1 over Curr
-Low0 = motorCurr(end-1);  % 0 no over curr, 1 over Curr
-Low2 = motorCurr(end-2);  % 0 no over curr, 1 over Curr
-LeftCurrOver = motorCurr(end-3)  % 0 no over curr, 1 over Curr
-RightCurrOver = motorCurr(end-4)  % 0 no over curr, 1 over Curr
+    motorCurr = dec2bin( read(serPort, 1, "uint8"),8 );
+    Low1 = motorCurr(end);  % 0 no over curr, 1 over Curr
+    Low0 = motorCurr(end-1);  % 0 no over curr, 1 over Curr
+    Low2 = motorCurr(end-2);  % 0 no over curr, 1 over Curr
+    LeftCurrOver = motorCurr(end-3);  % 0 no over curr, 1 over Curr
+    RightCurrOver = motorCurr(end-4);  % 0 no over curr, 1 over Curr
 
 
-DirtL = fread(serPort, 1)
-DirtR = fread(serPort, 1)
+    DirtL = read(serPort, 1, "uint8");
+    DirtR = read(serPort, 1, "uint8");
 
-RemoteCode =  fread(serPort, 1); % coudl be used by remote or to communicate with sendIR command
-Buttons = dec2bin(fread(serPort, 1),8);
-ButtonPlay = Buttons(end)
-ButtonAdv = Buttons(end-2)
+    RemoteCode =  read(serPort, 1, "uint8"); % coudl be used by remote or to communicate with sendIR command
+    Buttons = dec2bin(read(serPort, 1, "uint8"),8);
+    ButtonPlay = Buttons(end);
+    ButtonAdv = Buttons(end-2);
 
-Dist = fread(serPort, 1, 'int16')/1000 % convert to Meters, signed, average dist wheels traveled since last time called...caps at +/-32
-Angle = fread(serPort, 1, 'int16')*pi/180 % convert to radians, signed,  since last time called, CCW positive
+    Dist = read(serPort, 1, 'int16')/1000; % convert to Meters, signed, average dist wheels traveled since last time called...caps at +/-32
+    Angle = read(serPort, 1, 'int16')*pi/180; % convert to radians, signed,  since last time called, CCW positive
 
-ChargeState = fread(serPort, 1);
-Volts = fread(serPort, 1, 'uint16')/1000
-Current = fread(serPort, 1, 'int16')/1000 % neg sourcing, pos charging
-Temp  =  fread(serPort, 1, 'int8') 
-Charge =  fread(serPort, 1, 'uint16') % in mAhours
-Capacity =  fread(serPort, 1, 'uint16')
-pCharge = Charge/Capacity *100  % May be inaccurate
-%checksum =  fread(serPort, 1)
+    ChargeState = read(serPort, 1, "uint8");
+    Volts = read(serPort, 1, 'uint16')/1000;
+    Current = read(serPort, 1, 'int16')/1000; % neg sourcing, pos charging
+    Temp  =  read(serPort, 1, 'int8') ;
+    Charge =  read(serPort, 1, 'uint16') ;% in mAhours
+    Capacity =  read(serPort, 1, 'uint16');
+    pCharge = Charge/Capacity *100;  % May be inaccurate
+    %checksum =  fread(serPort, 1)
 
-pause(td)
+    pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end

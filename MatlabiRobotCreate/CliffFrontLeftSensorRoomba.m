@@ -1,30 +1,27 @@
-function [state] = CliffFrontLeftSensorRoomba(serPort);
+function [state] = CliffFrontLeftSensorRoomba(serPort)
 %[state] = CliffFrontLeftSensorRoomba(serPort)
 % Specifies the state of the Cliff Front Left sensor
 % Either triggered or not triggered
 
 % By; Joel Esposito, US Naval Academy, 2011
 % Modified by: Chuck Yang, ty244, 2012
+% % % Liran 2025 new TCP implementation
 
 %Initialize preliminary return values
 state = nan;
 try
-    
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
 
-warning off
-global td
+    %Flush Buffer
+    flush(serPort);
 
-fwrite(serPort, [142 10]);
-CliffFrntLft = dec2bin(fread(serPort, 1));
-state = bin2dec(CliffFrntLft(end));
+    warning off
+    global td
 
-pause(td)
+    write(serPort, [142 10], "uint8");
+    CliffFrntLft = dec2bin(read(serPort, 1, "uint8"));
+    state = bin2dec(CliffFrntLft(end));
+
+    pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end

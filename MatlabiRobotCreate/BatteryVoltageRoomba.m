@@ -1,4 +1,4 @@
-function [Voltage] = BatteryVoltageRoomba(serPort);
+function [Voltage] = BatteryVoltageRoomba(serPort)
 %Indicates the voltage of Create's battery in Volts
 
 
@@ -6,24 +6,23 @@ function [Voltage] = BatteryVoltageRoomba(serPort);
 % Modified by: Chuck Yang, ty244, 2012
 
 %Initialize preliminary return values
+% % % Liran 2025 new TCP implementation
+
 Voltage = nan;
 
 try
-    
-%Flush Buffer    
-N = serPort.BytesAvailable();
-while(N~=0) 
-fread(serPort,N);
-N = serPort.BytesAvailable();
-end
 
-warning off
-global td
-fwrite(serPort, [142 25]);
+    %Flush Buffer
+    flush(serPort);
 
-Voltage = fread(serPort, 1, 'uint16')/1000;
+    warning off
+    global td
 
-pause(td)
+    write(serPort, [142 25], "uint8");
+
+    Voltage = read(serPort, 1, 'uint16')/1000;
+
+    pause(td)
 catch
-    disp('WARNING:  function did not terminate correctly.  Output may be unreliable.')
+    disp(append('WARNING: function ', mfilename, ' did not execute correctly'));
 end
