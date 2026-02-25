@@ -18,9 +18,9 @@ try
     warning off
     global td
     write(serPort, [142 25], "uint8");
-    Charge =  read(serPort, 1, 'uint16');
+    Charge =  double(read(serPort, 1, 'uint16'));
     write(serPort, [142 26], "uint8");
-    Capacity =  read(serPort, 1, 'uint16');
+    Capacity =  double(read(serPort, 1, 'uint16'));
 
     Percent=Charge/Capacity*100;
 
