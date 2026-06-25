@@ -1,7 +1,6 @@
-function [] = SetFwdVelAngVelCreate(Robot, FwdVel, AngVel )
+function [] = SetFwdVelAngVelRoomba(serPort, FwdVel, AngVel )
 %[] = SetFwdVelAngVelCreate(Robot, FwdVel, AngVel )
 %
-% Robot is the robot struct created by CretePiInit
 %
 %  Specify forward velocity in meters/ sec
 %  [-0.5, 0.5].   Specify Angular Velocity in rad/sec.  Negative velocity is backward/Clockwise.  Caps overflow.
@@ -15,7 +14,6 @@ function [] = SetFwdVelAngVelCreate(Robot, FwdVel, AngVel )
 % % % Liran 2025 new TCP implementation
 
 
-serPort = Robot.CreatePort;
 
 try
 

@@ -22,7 +22,7 @@ try
 
     write(serPort, [142 23], "uint8");
 
-    Current = read(serPort, 1, 'int16')/1000;
+    Current = double(read(serPort, 1, 'int16'))/1000;
 
     pause(td)
 catch

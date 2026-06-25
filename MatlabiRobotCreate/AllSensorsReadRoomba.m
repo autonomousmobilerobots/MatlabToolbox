@@ -97,15 +97,15 @@ try
     ButtonPlay = Buttons(end);
     ButtonAdv = Buttons(end-2);
 
-    Dist = read(serPort, 1, 'int16')/1000; % convert to Meters, signed, average dist wheels traveled since last time called...caps at +/-32
-    Angle = read(serPort, 1, 'int16')*pi/180; % convert to radians, signed,  since last time called, CCW positive
+    Dist = double(read(serPort, 1, 'int16'))/1000; % convert to Meters, signed, average dist wheels traveled since last time called...caps at +/-32
+    Angle = double(read(serPort, 1, 'int16'))*pi/180; % convert to radians, signed,  since last time called, CCW positive
 
     ChargeState = read(serPort, 1, "uint8");
-    Volts = read(serPort, 1, 'uint16')/1000;
-    Current = read(serPort, 1, 'int16')/1000; % neg sourcing, pos charging
+    Volts = double(read(serPort, 1, 'uint16'))/1000;
+    Current = double(read(serPort, 1, 'int16'))/1000; % neg sourcing, pos charging
     Temp  =  read(serPort, 1, 'int8') ;
-    Charge =  read(serPort, 1, 'uint16') ;% in mAhours
-    Capacity =  read(serPort, 1, 'uint16');
+    Charge =  double(read(serPort, 1, 'uint16')) ;% in mAhours
+    Capacity =  double(read(serPort, 1, 'uint16'));
     pCharge = Charge/Capacity *100;  % May be inaccurate
     %checksum =  fread(serPort, 1)
 

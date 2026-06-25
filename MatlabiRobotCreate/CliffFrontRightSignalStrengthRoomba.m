@@ -21,7 +21,7 @@ try
     global td
     write(serPort, [142 30], "uint8");
 
-    Strength =  read(serPort, 1, 'uint16');
+    Strength =  double(read(serPort, 1, 'uint16'));
     Signal=(Strength/4095)*100;
 
     pause(td)

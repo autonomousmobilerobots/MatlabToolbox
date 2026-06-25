@@ -23,7 +23,7 @@ try
     while serPort.NumBytesAvailable == 0
         %pause(0.1);
     end
-    AngleR = read(serPort, 1, 'int16')*pi/180;
+    AngleR = double(read(serPort, 1, 'int16'))*pi/180;
     pause(td)
 catch
     disp(append('WARNING: function ', mfilename, ' did not execute correctly'));

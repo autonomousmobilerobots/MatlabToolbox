@@ -27,7 +27,7 @@ try
         %pause(0.1);
     end
 
-    Distance = read(serPort, 1, "int16")/1000;
+    Distance = double(read(serPort, 1, 'int16'))/1000;
     if (Distance > 32) || (Distance <-32)
         disp('Warning:  May have overflowed')
     end

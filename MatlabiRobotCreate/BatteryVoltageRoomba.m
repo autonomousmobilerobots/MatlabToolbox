@@ -20,7 +20,7 @@ try
 
     write(serPort, [142 25], "uint8");
 
-    Voltage = read(serPort, 1, 'uint16')/1000;
+    Voltage = double(read(serPort, 1, 'uint16'))/1000;
 
     pause(td)
 catch
